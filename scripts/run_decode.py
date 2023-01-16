@@ -23,10 +23,11 @@ if __name__ == '__main__':
     dname = os.path.dirname(abspath)
     dname = os.path.dirname(dname)
     os.chdir(dname)
-
+     
+    print('args.model_dir',args.model_dir)
     output_lst = []
     for lst in glob.glob(args.model_dir):
-        print(lst)
+        print('lst:',lst)
         checkpoints = sorted(glob.glob(f"{lst}/{args.pattern}*.pt"))[::-1]
 
         out_dir = 'generation_outputs'
@@ -34,7 +35,7 @@ if __name__ == '__main__':
             os.mkdir(out_dir)
 
         for checkpoint_one in checkpoints:
-
+            print('RUN COMMAND')
             COMMAND = f'python -m torch.distributed.launch --nproc_per_node=1 --master_port={12233 + int(args.seed)} --use_env sample_seq2seq.py ' \
             f'--model_path {checkpoint_one} --step {args.step} ' \
             f'--batch_size {args.bsz} --seed2 {args.seed} --split {args.split} ' \
